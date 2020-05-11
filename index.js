@@ -85,15 +85,13 @@ var tableBuilder = {
 
   getCell: function (x, y) {
     if (x === 0 && y === 0) {
-      const diff = this.maxX - this.minX + 1
       return '' +
                 '<th class="restart">' +
                     '<a href="#" ' +
                         'onclick="if(window.confirm(\'Delete all your answers and start again?\') === true) {tableBuilder.init(true);}">' +
                         this.restartSVG +
                     '</a> ' +
-                    '<a href="#" onclick="tableBuilder.levelChange(' + (-1 * diff) + ');">-</a> ' +
-                    '<a href="#" onclick="tableBuilder.levelChange(' + (-1 * diff) + ');">+</a>' +
+
                 '</th>'
     } else if (x === 0) {
       return this.getRowHeader(y)
