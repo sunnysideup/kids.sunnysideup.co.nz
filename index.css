@@ -100,6 +100,19 @@ input.bad {
   opacity: 0.5; /* Firefox */
 }
 
+/* remove arrow buttons from number inputs */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 
 .y-1 input {background-color: #feed01; color: #000}
 .y-2 input {background-color: #f9b234; }
