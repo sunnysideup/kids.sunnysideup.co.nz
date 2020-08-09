@@ -1,4 +1,3 @@
-
 var tableBuilder = {
 
   minWidthForColumn: 150,
