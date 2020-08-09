@@ -68,6 +68,7 @@ var tableBuilder = {
     }
     html += this.getTableEnd()
     document.getElementById('table-holder').innerHTML = html
+
   },
 
   getTableStart: function () { return '<table><tbody>' },
@@ -110,10 +111,11 @@ var tableBuilder = {
       return '' +
                 '<td class="' + classX + ' ' + classY + '" >' +
                     '<input ' +
+                        'type="number"' +
                         'id="' + id + '" ' +
                         'data-answer="' + (x * y) + '" ' +
                         'placeholder="' + x + '×' + y + '" ' +
-                        'onkeyup="tableBuilder.test(this,' + x + ', ' + y + ', false);" ' +
+                        'onkeyup="tableBuilder.test(event,this,' + x + ', ' + y + ', false);" ' +
                         'onblur="tableBuilder.test(this,' + x + ', ' + y + ', false);" ' +
                         'onchange="tableBuilder.test(this,' + x + ', ' + y + ', true);" ' +
                         'pattern="[0-9]" ' +
@@ -140,7 +142,7 @@ var tableBuilder = {
     return value
   },
 
-  test: function (el, x, y, testGrid) {
+  test: function (event, el, x, y, testGrid) {
     const test = x * y
     const answer = parseInt(el.value)
     if (!answer || isNaN(answer)) {
@@ -164,6 +166,12 @@ var tableBuilder = {
       } else {
         el.classList.remove('good')
         el.classList.add('bad')
+      }
+    }
+    if (event.code == "Enter") {
+      const newTabIndex = this.getNextTabIndex(x, y)
+      if (newTabIndex) {
+        newTabIndex.focus()
       }
     }
   },
