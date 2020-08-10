@@ -167,11 +167,47 @@ var tableBuilder = {
         el.classList.add('bad')
       }
     }
-    if (event.code == "Enter") {
-      const newTabIndex = this.getNextTabIndex(x, y)
-      if (newTabIndex) {
-        newTabIndex.focus()
-      }
+    this.keyPressed(event, x, y);
+  },
+
+  keyPressed: function (event, x, y) {
+    var newTabIndex
+    switch(event.code) {
+      case "Enter":
+        newTabIndex = this.getNextTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      case "ArrowLeft":
+        newTabIndex = this.getLeftTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      case "ArrowRight":
+        newTabIndex = this.getRightTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+
+      /* 
+      This clashes with the number input type arrow key functionality 
+      ----
+      case "ArrowUp":
+        newTabIndex = this.getPrevTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      case "DownUp":
+        newTabIndex = this.getNextTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      */
     }
   },
 
@@ -245,13 +281,7 @@ var tableBuilder = {
     return (10000000 * x) + y
   },
 
-  getNextTabIndex: function (x, y) {
-    if (y === this.maxY) {
-      x++
-      y = this.minY
-    } else {
-      y++
-    }
+  getTabByXY: function (x, y) {
     const getNextTabIndexValue = this.getTabIndex(x, y)
     const selector = 'input[tabindex=\'' + getNextTabIndexValue + '\']'
     // console.log(selector);
@@ -261,6 +291,44 @@ var tableBuilder = {
     } else {
       // console.log('not found!');
     }
+  },
+
+  getLeftTabIndex: function (x, y) {
+    console.log(this.maxXDefault)
+    if (x != 1) {
+      x--
+    } else {
+      x = this.maxXDefault
+    }
+    return this.getTabByXY(x, y)
+  },
+
+  getRightTabIndex: function (x, y) {
+    if (x != this.maxXDefault) {
+      x++
+    } else {
+      x = 1
+    }
+    return this.getTabByXY(x, y)
+  },
+
+  getPrevTabIndex: function (x, y) {
+    if (y === this.minY) {
+      y = this.maxY
+    } else {
+      y--
+    }
+    return this.getTabByXY(x, y)
+  },
+
+  getNextTabIndex: function (x, y) {
+    if (y === this.maxY) {
+      x++
+      y = this.minY
+    } else {
+      y++
+    }
+    return this.getTabByXY(x, y)
   }
 
 }
