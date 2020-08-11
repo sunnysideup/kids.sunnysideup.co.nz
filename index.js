@@ -1,4 +1,3 @@
-
 var tableBuilder = {
 
   minWidthForColumn: 150,
@@ -68,6 +67,7 @@ var tableBuilder = {
     }
     html += this.getTableEnd()
     document.getElementById('table-holder').innerHTML = html
+
   },
 
   getTableStart: function () { return '<table><tbody>' },
@@ -110,10 +110,11 @@ var tableBuilder = {
       return '' +
                 '<td class="' + classX + ' ' + classY + '" >' +
                     '<input ' +
+                        'type="number"' +
                         'id="' + id + '" ' +
                         'data-answer="' + (x * y) + '" ' +
                         'placeholder="' + x + '×' + y + '" ' +
-                        'onkeyup="tableBuilder.test(this,' + x + ', ' + y + ', false);" ' +
+                        'onkeyup="tableBuilder.test(event,this,' + x + ', ' + y + ', false);" ' +
                         'onblur="tableBuilder.test(this,' + x + ', ' + y + ', false);" ' +
                         'onchange="tableBuilder.test(this,' + x + ', ' + y + ', true);" ' +
                         'pattern="[0-9]" ' +
@@ -140,7 +141,7 @@ var tableBuilder = {
     return value
   },
 
-  test: function (el, x, y, testGrid) {
+  test: function (event, el, x, y, testGrid) {
     const test = x * y
     const answer = parseInt(el.value)
     if (!answer || isNaN(answer)) {
@@ -165,6 +166,48 @@ var tableBuilder = {
         el.classList.remove('good')
         el.classList.add('bad')
       }
+    }
+    this.keyPressed(event, x, y);
+  },
+
+  keyPressed: function (event, x, y) {
+    var newTabIndex
+    switch(event.code) {
+      case "Enter":
+        newTabIndex = this.getNextTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      case "ArrowLeft":
+        newTabIndex = this.getLeftTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      case "ArrowRight":
+        newTabIndex = this.getRightTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+
+      /* 
+      This clashes with the number input type arrow key functionality 
+      ----
+      case "ArrowUp":
+        newTabIndex = this.getPrevTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      case "DownUp":
+        newTabIndex = this.getNextTabIndex(x, y)
+        if (newTabIndex) {
+          newTabIndex.focus()
+        }
+        break
+      */
     }
   },
 
@@ -238,13 +281,7 @@ var tableBuilder = {
     return (10000000 * x) + y
   },
 
-  getNextTabIndex: function (x, y) {
-    if (y === this.maxY) {
-      x++
-      y = this.minY
-    } else {
-      y++
-    }
+  getTabByXY: function (x, y) {
     const getNextTabIndexValue = this.getTabIndex(x, y)
     const selector = 'input[tabindex=\'' + getNextTabIndexValue + '\']'
     // console.log(selector);
@@ -254,6 +291,44 @@ var tableBuilder = {
     } else {
       // console.log('not found!');
     }
+  },
+
+  getLeftTabIndex: function (x, y) {
+    console.log(this.maxXDefault)
+    if (x != 1) {
+      x--
+    } else {
+      x = this.maxXDefault
+    }
+    return this.getTabByXY(x, y)
+  },
+
+  getRightTabIndex: function (x, y) {
+    if (x != this.maxXDefault) {
+      x++
+    } else {
+      x = 1
+    }
+    return this.getTabByXY(x, y)
+  },
+
+  getPrevTabIndex: function (x, y) {
+    if (y === this.minY) {
+      y = this.maxY
+    } else {
+      y--
+    }
+    return this.getTabByXY(x, y)
+  },
+
+  getNextTabIndex: function (x, y) {
+    if (y === this.maxY) {
+      x++
+      y = this.minY
+    } else {
+      y++
+    }
+    return this.getTabByXY(x, y)
   }
 
 }
