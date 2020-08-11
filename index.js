@@ -145,13 +145,11 @@ var tableBuilder = {
     const test = x * y
     const answer = parseInt(el.value)
     if (!answer || isNaN(answer)) {
-      el.classList.remove('good')
-      el.classList.remove('bad')
+      this.makeNothing(el)
     } else {
       const newGoodAnswer = !el.classList.contains('good')
       if (answer === test) {
-        el.classList.add('good')
-        el.classList.remove('bad')
+        this.makeGood(el)
         this.myCookie.setCookie(el.id, answer)
         if (newGoodAnswer) {
           const newTabIndex = this.getNextTabIndex(x, y)
@@ -163,37 +161,58 @@ var tableBuilder = {
         //     this.levelUp(x);
         // }
       } else {
-        el.classList.remove('good')
-        el.classList.add('bad')
+        this.makeBad(el)
       }
     }
-    this.keyPressed(event, x, y);
+    this.keyPressed(event, x, y)
+  },
+
+  makeNothing: function (el) {
+    if (typeof el.classList !== 'undefined') {
+      el.classList.remove('bad')
+      el.classList.remove('good')
+      el.classList.add('nothing')
+    }
+  },
+
+  makeGood: function (el) {
+    if (typeof el.classList !== 'undefined') {
+      el.classList.remove('bad')
+      el.classList.add('good')
+    }
+  },
+
+  makeBad: function (el) {
+    if (typeof el.classList !== 'undefined') {
+      el.classList.remove('good')
+      el.classList.add('bad')
+    }
   },
 
   keyPressed: function (event, x, y) {
-    var newTabIndex
-    switch(event.code) {
-      case "Enter":
+    let newTabIndex
+    switch (event.code) {
+      case 'Enter':
         newTabIndex = this.getNextTabIndex(x, y)
         if (newTabIndex) {
           newTabIndex.focus()
         }
         break
-      case "ArrowLeft":
+      case 'ArrowLeft':
         newTabIndex = this.getLeftTabIndex(x, y)
         if (newTabIndex) {
           newTabIndex.focus()
         }
         break
-      case "ArrowRight":
+      case 'ArrowRight':
         newTabIndex = this.getRightTabIndex(x, y)
         if (newTabIndex) {
           newTabIndex.focus()
         }
         break
 
-      /* 
-      This clashes with the number input type arrow key functionality 
+      /*
+      This clashes with the number input type arrow key functionality
       ----
       case "ArrowUp":
         newTabIndex = this.getPrevTabIndex(x, y)
@@ -295,7 +314,7 @@ var tableBuilder = {
 
   getLeftTabIndex: function (x, y) {
     console.log(this.maxXDefault)
-    if (x != 1) {
+    if (x !== 1) {
       x--
     } else {
       x = this.maxXDefault
@@ -304,7 +323,7 @@ var tableBuilder = {
   },
 
   getRightTabIndex: function (x, y) {
-    if (x != this.maxXDefault) {
+    if (x !== this.maxXDefault) {
       x++
     } else {
       x = 1
