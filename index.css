@@ -40,6 +40,7 @@ td, th {
     width: calc((100vw - (12 * 5px)) / 12);
     height: calc((100vh - (12 * 10px)) / 12);
     position: relative;
+    vertical-align: top;
 }
 th {
     border: 1px solid #fff;
@@ -48,7 +49,8 @@ th {
 }
 th.restart, th[scope="row"] {
     width: 1em!important;
-}th.restart, th[scope="col"] {
+}
+th.restart, th[scope="col"] {
     height: 1em!important;
 }
 input {
