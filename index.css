@@ -1,6 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=B612+Mono:wght@700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch&family=Mali&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch&display=swap');
+
+/*
+font-family: 'Cabin Sketch', cursive;
+font-family: 'Gochi Hand', cursive;
+font-family: 'Mali', cursive;
+*/
+
 * {
-    font-family: 'B612 Mono', monospace;
+    font-family: 'Cabin Sketch', cursive;
     font-size: 20px;
 }
 td {
@@ -36,10 +44,15 @@ td, th {
 th {
     border: 1px solid #fff;
     background-color: #fff;
-    color: #555;
+    color: #ddd;
+}
+th.restart, th[scope="row"] {
+    width: 1em!important;
+}th.restart, th[scope="col"] {
+    height: 1em!important;
 }
 input {
-    border-radius: 3px;
+    border-radius: 20px;
     border: none;
     display: block;
     position: absolute;
@@ -83,6 +96,7 @@ input.good {
 input.bad {
     background-color: black!important;
     opacity: 0.7;
+    color: #fff!important;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -95,10 +109,6 @@ input.bad {
   opacity: 0.5; /* Firefox */
 }
 
-::-ms-input-placeholder { /* Microsoft Edge */
-  color: #eee;
-  opacity: 0.5; /* Firefox */
-}
 
 /* remove arrow buttons from number inputs */
 /* Chrome, Safari, Edge, Opera */
@@ -115,6 +125,8 @@ input[type=number] {
 
 
 .y-1 input {background-color: #feed01; color: #000}
+.y-1 input:focus::placeholder  {color: #000!important;}
+.y-1 input:focus::-ms-input-placeholder  {color: #000!important;}
 .y-2 input {background-color: #f9b234; }
 .y-3 input {background-color: #f29200;}
 .y-4 input {background-color: #ea5b0c;}
@@ -126,6 +138,7 @@ input[type=number] {
 .y-10 input {background-color: #0f70b7;}
 .y-11 input {background-color: #0c8e36;}
 .y-12 input {background-color: #94c120;color: #000}
+.y-12 input:focus {color: #000}
 
 .restart {
     padding: 5px;
@@ -135,10 +148,8 @@ input[type=number] {
     height: 16px;
 }
 .restart a {
-    margin-left: auto;
-    margin-right: auto;
-    display:block;
-    float: left;
+    display: block;
+    margin: 0 auto;
     padding:0.35em;
     text-align:center;
     transition: all 0.2s;
