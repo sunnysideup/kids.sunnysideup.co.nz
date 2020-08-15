@@ -1,3 +1,8 @@
+if ('serviceWorker' in navigator) {
+  // register service worker
+  navigator.serviceWorker.register('service-worker.js')
+}
+
 var tableBuilder = {
 
   minWidthForColumn: 150,
@@ -67,12 +72,14 @@ var tableBuilder = {
     }
     html += this.getTableEnd()
     document.getElementById('table-holder').innerHTML = html
-
   },
 
   getTableStart: function () { return '<table><tbody>' },
+
   getTableEnd: function () { return '</tbody></table>' },
+
   getRowStart: function () { return '<tr>' },
+
   getRowEnd: function () { return '</tr>' },
 
   getRowHeader: function (y) {
