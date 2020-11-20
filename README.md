@@ -5,4 +5,6 @@ see https://dev.to/developertharun/convert-any-website-into-a-pwa-in-just-3-simp
 
 use parcel to build
 
+https://parceljs.org/getting_started.html
+
 (parcel build index.html)
