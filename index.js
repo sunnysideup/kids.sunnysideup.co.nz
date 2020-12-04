@@ -142,6 +142,7 @@ const tableBuilder = {
     }
     html += this.getTableEnd()
     document.getElementById('table-holder').innerHTML = html
+    this.setFirstThreeAnswers();
   },
 
   getTableStart: function () { return '<table><tbody>' },
@@ -363,6 +364,22 @@ const tableBuilder = {
 
     return true
   },
+
+  setFirstThreeAnswers: function () {
+    const x = 1
+    let y = 1
+    let answer = null
+    let input = null
+    for (y = 1; y < 4; y++) {
+      input = this.getTabByXY(x, y)
+      answer = x * y
+      console.log('==================')
+      console.log('answer = ' + answer)
+      console.log(input)
+      console.log('==================')
+    }
+  },
+
   //
   // zeroFill: function (number, width) {
   //   width -= number.toString().length
