@@ -3,32 +3,90 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js')
 }
 
-var tableBuilder = {
+const tableBuilder = {
 
+  /**
+   * minimum width in pixels for each column.
+   * @type {number}
+   */
   minWidthForColumn: 150,
 
+  /**
+   * default max number of columns
+   * @type {number}
+   */
+  maxNumberOfColumnsEver: 12,
+
+  /**
+   * default minimum number of columns
+   * @type {number}
+   */
   minXDefault: 1,
 
-  maxXDefault: 1,
+  /**
+   * default max number of columns
+   * @type {number}
+   */
+  maxXDefault: 12,
 
+  /**
+   * default min number of row
+   * @type {number}
+   */
   minYDefault: 1,
 
+  /**
+   * default max number of rows
+   * @type {Integer}
+   */
   maxYDefault: 12,
 
+  /**
+   * calculated minimum number of columns
+   * @type {number}
+   */
   minX: 0,
 
+  /**
+   * calculated max number of columns
+   * @type {number}
+   */
   maxX: 0,
 
+  /**
+   * calculated minimum number of rows
+   * @type {number}
+   */
   minY: 0,
 
+  /**
+   * calculated maximum number of columns
+   * @type {number}
+   */
   maxY: 0,
 
+  /**
+   * is it a restart
+   * @type {boolean}
+   */
   restart: false,
 
+  /**
+   * viewport width
+   * @type {number}
+   */
   vw: 0,
 
+  /**
+   * viewport height
+   * @type {number}
+   */
   vh: 0,
 
+  /**
+   * reset SVG
+   * @type {string}
+   */
   restartSVG: `
         <svg version="1.1" viewBox="0 0 178.2 186.08" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(-287.94 -456.48)" fill="none">
@@ -38,14 +96,19 @@ var tableBuilder = {
         </svg>`,
 
   init: function (restart) {
-    // console.log(restart);
+    // lets set the viewport: https://stackoverflow.com/questions/1248081/how-to-get-the-browser-viewport-dimensions
     this.vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
     this.vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-    let addition = Math.floor(this.vw / this.minWidthForColumn)
-    if (addition > 11) {
-      addition = 11
+
+    // work out the number of columns to add
+    let additionalColumns = Math.floor(this.vw / this.minWidthForColumn)
+    const maxColumns = this.maxNumberOfColumnsEver - 1
+    if (additionalColumns > maxColumns) {
+      additionalColumns = maxColumns
     }
-    this.maxXDefault = this.minXDefault + addition
+
+    // reset min and mix
+    this.maxXDefault = this.minXDefault + additionalColumns
     if (restart === true || this.minX === 0) {
       if (restart === true) {
         this.restart = true
@@ -55,17 +118,24 @@ var tableBuilder = {
       this.maxX = this.maxXDefault
       this.maxY = this.maxYDefault
     }
+
+    //  start building HTML
     let html = ''
     html += this.getTableStart()
     for (let y = 0; y <= this.maxY; y++) {
+      // if minY has not been reached yet, do the next loop
       if (y > 0 && y < this.minY) {
         continue
       }
+
+      // start a row
       html += this.getRowStart()
       for (let x = 0; x <= this.maxX; x++) {
+        // if minX has not been reached yet, do the next loop
         if (x > 0 && x < this.minX) {
           continue
         }
+        // build the cell
         html += this.getCell(x, y)
       }
       html += this.getRowEnd()
@@ -92,6 +162,7 @@ var tableBuilder = {
 
   getCell: function (x, y) {
     if (x === 0 && y === 0) {
+      // HEADER-HEADER: this is the upper-left cell - the reset cell!
       return '' +
                 '<th class="restart">' +
                     '<a href="#" ' +
@@ -101,10 +172,13 @@ var tableBuilder = {
 
                 '</th>'
     } else if (x === 0) {
+      // HEADER: get a new row (tr)
       return this.getRowHeader(y)
     } else if (y === 0) {
+      // HEADER: get a new column
       return this.getColumnHeader(x)
     } else {
+      // real cell!
       const classX = 'x-' + x
       const classY = 'y-' + y
       const tabIndex = this.getTabIndex(x, y)
@@ -148,16 +222,31 @@ var tableBuilder = {
     return value
   },
 
+  /**
+   * test if the entered value is correct?
+   * @param  {object} event - what event caused the test?
+   * @param  {object} el - element being tested
+   * @param  {number} x - the value for x
+   * @param  {number} y - the value for y
+   * @param  {boolean} testGrid - ????
+   */
   test: function (event, el, x, y, testGrid) {
+    // what is the answer
     const test = x * y
     const answer = parseInt(el.value)
     if (!answer || isNaN(answer)) {
+      // no answer!
       this.makeNothing(el)
     } else {
+      // test answer ...
       const newGoodAnswer = !el.classList.contains('good')
       if (answer === test) {
+        // right answer
         this.makeGood(el)
+        // save cookie
         this.myCookie.setCookie(el.id, answer)
+
+        // find next answer!
         if (newGoodAnswer) {
           const newTabIndex = this.getNextTabIndex(x, y)
           if (newTabIndex) {
@@ -168,6 +257,7 @@ var tableBuilder = {
         //     this.levelUp(x);
         // }
       } else {
+        // bad answer!
         this.makeBad(el)
       }
     }
@@ -182,6 +272,9 @@ var tableBuilder = {
     }
   },
 
+  /**
+   * bad answer
+   */
   makeGood: function (el) {
     if (typeof el.classList !== 'undefined') {
       el.classList.remove('bad')
@@ -189,6 +282,9 @@ var tableBuilder = {
     }
   },
 
+  /**
+   * good answer
+   */
   makeBad: function (el) {
     if (typeof el.classList !== 'undefined') {
       el.classList.remove('good')
@@ -196,6 +292,12 @@ var tableBuilder = {
     }
   },
 
+  /**
+   * action key being pressed
+   * @param  {object} event
+   * @param  {number} x
+   * @param  {number} y
+   */
   keyPressed: function (event, x, y) {
     let newTabIndex
     switch (event.code) {
@@ -237,6 +339,12 @@ var tableBuilder = {
     }
   },
 
+  /**
+   * task completed!
+   * returns true if task is completed.
+   * @param  {number} x
+   * @return {boolean}
+   */
   levelUp: function (x) {
     const selector = 'x-' + x
     const cells = document.getElementsByClassName(selector)
@@ -255,17 +363,27 @@ var tableBuilder = {
 
     return true
   },
+  //
+  // zeroFill: function (number, width) {
+  //   width -= number.toString().length
+  //   if (width > 0) {
+  //     return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number
+  //   }
+  //   return number + '' // always return a string
+  // },
 
-  zeroFill: function (number, width) {
-    width -= number.toString().length
-    if (width > 0) {
-      return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number
-    }
-    return number + '' // always return a string
-  },
-
+  /**
+   * cookie management
+   * @type {Object}
+   */
   myCookie: {
 
+    /**
+     * set a cookie value
+     * @param  {string} name
+     * @param  {mixed} value
+     * @param  {number} days  how long to keep it ?
+     */
     setCookie: function (name, value, days) {
       let expires = ''
       if (typeof days === 'undefined') {
@@ -280,6 +398,11 @@ var tableBuilder = {
       document.cookie = name + '=' + (value || '') + expires + '; path=/'
     },
 
+    /**
+     * get cookie value
+     * @param  {string} name
+     * @return {mixed}
+     */
     getCookie: function (name) {
       const nameEQ = name + '='
       const ca = document.cookie.split(';')
@@ -303,10 +426,23 @@ var tableBuilder = {
     }
   },
 
+  /**
+   * get a unique number that always prioritises X over Y
+   * e.g. if x is 3 and y is 7 then the number is 30000000007000
+   * @param  {number} x
+   * @param  {number} y
+   * @return {number}
+   */
   getTabIndex: function (x, y) {
     return (10000000 * x) + y
   },
 
+  /**
+   * find a cell by tab index
+   * @param  {number} x
+   * @param  {number} y
+   * @return {object|null}
+   */
   getTabByXY: function (x, y) {
     const getNextTabIndexValue = this.getTabIndex(x, y)
     const selector = 'input[tabindex=\'' + getNextTabIndexValue + '\']'
@@ -314,8 +450,6 @@ var tableBuilder = {
     // console.log(document.querySelector(selector));
     if (document.querySelector(selector)) {
       return document.querySelector(selector)
-    } else {
-      // console.log('not found!');
     }
   },
 
