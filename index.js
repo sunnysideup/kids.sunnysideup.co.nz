@@ -165,13 +165,13 @@ const tableBuilder = {
     if (x === 0 && y === 0) {
       // HEADER-HEADER: this is the upper-left cell - the reset cell!
       return '' +
-                '<th class="restart">' +
+                '<th class="restart"> </th>' +'<div clas="reset">' +
                     '<a href="#" ' +
                         'onclick="if(window.confirm(\'Delete all your answers and start again?\') === true) {tableBuilder.init(true);}">' +
                         this.restartSVG +
                     '</a> ' +
 
-                '</th>'
+                '</div>'
     } else if (x === 0) {
       // HEADER: get a new row (tr)
       return this.getRowHeader(y)
@@ -196,7 +196,7 @@ const tableBuilder = {
                         'id="' + id + '" ' +
                         'data-answer="' + (x * y) + '" ' +
                         'placeholder="' + x + '×' + y + '" ' +
-                        'onkeyup="tableBuilder.test(event,this,' + x + ', ' + y + ', false);" ' +
+                        'onkeydown="tableBuilder.test(event,this,' + x + ', ' + y + ', false);" ' +
                         'onblur="tableBuilder.test(this,' + x + ', ' + y + ', false);" ' +
                         'onchange="tableBuilder.test(this,' + x + ', ' + y + ', true);" ' +
                         'pattern="[0-9]" ' +
@@ -321,22 +321,22 @@ const tableBuilder = {
         }
         break
 
-      /*
-      This clashes with the number input type arrow key functionality
-      ----
+     
       case "ArrowUp":
         newTabIndex = this.getPrevTabIndex(x, y)
         if (newTabIndex) {
+          event.preventDefault()
           newTabIndex.focus()
         }
         break
-      case "DownUp":
+      case "ArrowDown":
         newTabIndex = this.getNextTabIndex(x, y)
         if (newTabIndex) {
+          event.preventDefault()
           newTabIndex.focus()
         }
         break
-      */
+      
     }
   },
 
@@ -366,6 +366,7 @@ const tableBuilder = {
   },
 
   setFirstThreeAnswers: function () {
+    this.myCookie.eraseAllCookie();
     const x = 1
     let y = 1
     let answer = null
@@ -373,10 +374,8 @@ const tableBuilder = {
     for (y = 1; y < 4; y++) {
       input = this.getTabByXY(x, y)
       answer = x * y
-      console.log('==================')
-      console.log('answer = ' + answer)
-      console.log(input)
-      console.log('==================')
+      input.value = answer;
+      this.makeGood(input);
     }
   },
 
@@ -440,6 +439,15 @@ const tableBuilder = {
     eraseCookie: function (name) {
       // console.log('erase cookie: '+name);
       this.setCookie(name, null, 0)
+    },
+    eraseAllCookie: function(){
+      const allCookies = document.cookie.split(';');
+      for(let i = 0; i < allCookies.length; i++){
+        var cookie = allCookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      }
     }
   },
 
