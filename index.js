@@ -196,7 +196,7 @@ const tableBuilder = {
                         'id="' + id + '" ' +
                         'data-answer="' + (x * y) + '" ' +
                         'placeholder="' + x + '×' + y + '" ' +
-                        'onkeyup="tableBuilder.test(event,this,' + x + ', ' + y + ', false);" ' +
+                        'onkeydown="tableBuilder.test(event,this,' + x + ', ' + y + ', false);" ' +
                         'onblur="tableBuilder.test(this,' + x + ', ' + y + ', false);" ' +
                         'onchange="tableBuilder.test(this,' + x + ', ' + y + ', true);" ' +
                         'pattern="[0-9]" ' +
@@ -321,16 +321,15 @@ const tableBuilder = {
         }
         break
 
-      /*
-      This clashes with the number input type arrow key functionality
-      ----
+      
       case "ArrowUp":
         newTabIndex = this.getPrevTabIndex(x, y)
         if (newTabIndex) {
           newTabIndex.focus()
         }
         break
-      case "DownUp":
+        
+      case "Arrowdown":
         newTabIndex = this.getNextTabIndex(x, y)
         if (newTabIndex) {
           newTabIndex.focus()
