@@ -186,3 +186,11 @@ footer h1 {
 footer a:hover {
     color: #f7cd55;
 }
+.reset{
+    text-align: center;
+    height: 50px;
+        width: 50px;
+     position:relative
+    
+    
+}
